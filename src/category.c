@@ -2,24 +2,33 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../include/category.h"
+#include "../include/file_utils.h"
 
 Category categories[MAX_CATEGORIES];
 int categoryCount = 0;
 
 void displayCategories()
 {
+    loadCategoriesFromFile("data/category.txt", categories, &categoryCount);
     if (categoryCount == 0)
     {
         printf("Danh muc trong.\n");
         return;
     }
 
-    printf("\n===== CATEGORIES =====\n");
+    printf("\n***** CATEGORIES *****\n\n");
+    printf("|=====|============|\n");
+    printf("| %-3s | %-10s |\n", "ID", "Name");
+    printf("|=====|============|\n");
+
     for (int i = 0; i < categoryCount; i++)
     {
-        printf("ID: %s, Name: %s\n", categories[i].categoryId, categories[i].categoryName);
+        printf("| %-3s | %-10s |\n", categories[i].categoryId, categories[i].categoryName);
+        if (i == categoryCount - 1)
+            printf("|=====|============|\n");
+        else
+            printf("|-----|------------|\n");
     }
-    printf("======================\n");
 }
 void addCategory()
 {
@@ -56,10 +65,11 @@ void addCategory()
     Category newCategory;
     strcpy(newCategory.categoryId, newCategoryId);
     strcpy(newCategory.categoryName, newCategoryName);
-    newCategory.productCount = 0;
 
     categories[categoryCount++] = newCategory;
     printf("Them danh muc thanh cong!\n");
+
+    saveCategoriesToFile("data/category.txt", categories, categoryCount);
 }
 void updateCategory()
 {
@@ -79,14 +89,13 @@ void updateCategory()
 
             strcpy(categories[i].categoryName, newCategoryName);
             printf("Cap nhat danh muc thanh cong!\n");
-            return;
-        }
-        else
-        {
-            printf("ID khong ton tai!\n");
+
+            saveCategoriesToFile("data/category.txt", categories, categoryCount);
             return;
         }
     }
+    printf("ID khong ton tai!\n");
+    return;
 }
 void deleteCategory()
 {
@@ -105,6 +114,8 @@ void deleteCategory()
             }
             categoryCount--;
             printf("Xoa danh muc thanh cong!\n");
+
+            saveCategoriesToFile("data/category.txt", categories, categoryCount);
             return;
         }
     }
@@ -125,22 +136,10 @@ void searchCategory()
         }
     }
 }
-int cmpAsc(const void *a, const void *b)
-{
-    const Category *x = (Category *)a;
-    const Category *y = (Category *)b;
-    return strcmp(x->categoryName, y->categoryName);
-}
-int cmpDesc(const void *a, const void *b)
-{
-    const Category *x = (Category *)a;
-    const Category *y = (Category *)b;
-    return strcmp(y->categoryName, x->categoryName);
-}
+
 void sortCategory()
 {
     int choice;
-
     do
     {
         printf("\n===== SAP XEP DANH MUC =====\n");
@@ -151,19 +150,33 @@ void sortCategory()
         printf("Nhap lua chon cua ban: ");
         scanf("%d", &choice);
         getchar();
-
         switch (choice)
         {
         case 1:
         {
-            qsort(categories, categoryCount, sizeof(Category), cmpAsc);
+            qsort(categories, categoryCount, sizeof(Category), cmpAscName);
             printf("Sap xep thanh cong!\n");
+
+            saveCategoriesToFile("data/category.txt", categories, categoryCount);
+            choice = 0;
             break;
         }
         case 2:
         {
-            qsort(categories, categoryCount, sizeof(Category), cmpDesc);
+            qsort(categories, categoryCount, sizeof(Category), cmpDescName);
             printf("Sap xep thanh cong!\n");
+
+            saveCategoriesToFile("data/category.txt", categories, categoryCount);
+            choice = 0;
+            break;
+        }
+        case 0:
+        {
+            break;
+        }
+        default:
+        {
+            printf("Lua chon khong hop le!\n");
             break;
         }
         }

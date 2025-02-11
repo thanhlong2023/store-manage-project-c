@@ -56,6 +56,7 @@ void categoryMenu()
         printf("============================\n");
         printf("Nhap lua chon cua ban: ");
         scanf("%d", &choice);
+        getchar();
 
         switch (choice)
         {
@@ -93,9 +94,14 @@ void productMenu()
     do
     {
         printf("\n===== QUAN LY SAN PHAM =====\n");
-        printf("1. Them san pham\n");
-        printf("2. Xem danh sach san pham\n");
-        printf("3. Quay lai menu chinh\n");
+        printf("1. Xem danh sach san pham\n");
+        printf("2. Them san pham\n");
+        printf("3. Sua san pham\n");
+        printf("4. Xoa san pham\n");
+        printf("5. Tim kiem san pham theo ten\n");
+        printf("6. Sap xep san pham theo gia tien\n");
+        printf("7. Loc san pham\n");
+        printf("0. Quay lai menu chinh\n");
         printf("============================\n");
         printf("Nhap lua chon cua ban: ");
         scanf("%d", &choice);
@@ -103,18 +109,31 @@ void productMenu()
         switch (choice)
         {
         case 1:
-            addProduct();
-            break;
-        case 2:
             viewProducts();
             break;
+        case 2:
+            addProduct();
+            break;
         case 3:
+            updateProduct();
+            break;
+        case 4:
+            deleteProduct();
+            break;
+        case 5:
+            searchProduct();
+            break;
+        case 6:
+            sortProduct();
+        case 7:
+            filterProduct();
+        case 0:
             printf("Quay lai menu chinh...\n");
             break;
         default:
-            printf("Lua chon khong hop le! Vui long nhap so tu 1 den 3.\n");
+            printf("Lua chon khong hop le!\n");
         }
-    } while (choice != 3);
+    } while (choice != 0);
 }
 
 void orderMenu()

@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "category.h": "c",
+        "file_utils.h": "c",
+        "product.h": "c"
+    }
+}

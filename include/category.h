@@ -3,15 +3,12 @@
 
 #include "product.h"
 
-#define MAX_PRODUCTS 100
-#define MAX_CATEGORIES 100
+#define MAX_CATEGORIES 1000
 
 typedef struct
 {
     char categoryId[10];
     char categoryName[30];
-    Product products[MAX_PRODUCTS]; // (Có thể sử dụng để lưu sản phẩm thuộc danh mục)
-    int productCount;               // vì dùng mảng tĩnh, để xác định số lượng thực tế
 } Category;
 
 // Khai báo hàm xử lý Category
