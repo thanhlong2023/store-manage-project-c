@@ -35,6 +35,7 @@ void mainMenu()
             break;
         default:
             printf("Lua chon khong hop le! Vui long nhap so tu 1 den 4.\n");
+            break;
         }
     } while (choice != 4);
 }
@@ -105,6 +106,7 @@ void productMenu()
         printf("============================\n");
         printf("Nhap lua chon cua ban: ");
         scanf("%d", &choice);
+        getchar();
 
         switch (choice)
         {
@@ -125,13 +127,16 @@ void productMenu()
             break;
         case 6:
             sortProduct();
+            break;
         case 7:
             filterProduct();
+            break;
         case 0:
             printf("Quay lai menu chinh...\n");
             break;
         default:
             printf("Lua chon khong hop le!\n");
+            break;
         }
     } while (choice != 0);
 }
@@ -163,6 +168,7 @@ void orderMenu()
             break;
         default:
             printf("Lua chon khong hop le! Vui long nhap so tu 1 den 3.\n");
+            break;
         }
     } while (choice != 3);
 }

@@ -5,13 +5,10 @@
 #include "category.h"
 
 // Hàm ghi mảng danh mục vào file nhị phân
-void saveCategoriesToFile(const char *filename, Category *categories, int categoryCount);
+void saveToFile(const char *filename, void *array, int cout, size_t elementSize);
 
 // Hàm đọc mảng danh mục từ file nhị phân
-int loadCategoriesFromFile(const char *filename, Category *categories, int *categoryCount);
-
-int cmpAscPrice(const void *a, const void *b);
-int cmpDescPrice(const void *a, const void *b);
+int loadFromFile(const char *filename, void *array, int *count, size_t elementSize);
 
 int cmpAscName(const void *a, const void *b);
 int cmpDescName(const void *a, const void *b);

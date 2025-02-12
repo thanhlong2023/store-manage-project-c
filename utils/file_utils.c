@@ -2,7 +2,7 @@
 #include "../include/category.h"
 #include <string.h>
 
-void saveCategoriesToFile(const char *filename, Category *categories, int categoryCount)
+void saveToFile(const char *filename, void *array, int count, size_t elementSize)
 {
     FILE *file = fopen(filename, "wb"); // Mở file ghi nhị phân
     if (!file)
@@ -11,13 +11,13 @@ void saveCategoriesToFile(const char *filename, Category *categories, int catego
         return;
     }
 
-    fwrite(&categoryCount, sizeof(int), 1, file);              // Ghi số lượng danh mục
-    fwrite(categories, sizeof(Category), categoryCount, file); // Ghi danh mục
+    fwrite(&count, sizeof(int), 1, file);    // Ghi số lượng phần tử
+    fwrite(array, elementSize, count, file); // Ghi dữ liệu
 
     fclose(file);
 }
 
-int loadCategoriesFromFile(const char *filename, Category *categories, int *categoryCount)
+int loadFromFile(const char *filename, void *array, int *count, size_t elementSize)
 {
     FILE *file = fopen(filename, "rb"); // Mở file đọc nhị phân
     if (!file)
@@ -26,8 +26,8 @@ int loadCategoriesFromFile(const char *filename, Category *categories, int *cate
         return 0;
     }
 
-    fread(categoryCount, sizeof(int), 1, file);                // Đọc số lượng danh mục
-    fread(categories, sizeof(Category), *categoryCount, file); // Đọc danh mục
+    fread(count, sizeof(int), 1, file);      // Đọc số lượng phần tử
+    fread(array, elementSize, *count, file); // Đọc dữ liệu vào mảng
 
     fclose(file);
     return 1;
@@ -44,17 +44,4 @@ int cmpDescName(const void *a, const void *b)
     const Category *x = (Category *)a;
     const Category *y = (Category *)b;
     return strcmp(y->categoryName, x->categoryName);
-}
-
-int cmpAscPrice(const void *a, const void *b)
-{
-    const Product *x = (Product *)a;
-    const Product *y = (Product *)b;
-    return x->price - y->price;
-}
-int cmpDescPrice(const void *a, const void *b)
-{
-    const Product *x = (Product *)a;
-    const Product *y = (Product *)b;
-    return y->price - x->price;
 }
