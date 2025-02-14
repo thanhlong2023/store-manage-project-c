@@ -40,6 +40,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <conio.h> // Thư viện cho _getch() trên Windows
+#include <stdlib.h>
 #include "../include/auth.h"
 
 // Hàm đọc mật khẩu và hiển thị *
@@ -80,20 +81,19 @@ int loginAdmin(const char *filename)
 
     while (1)
     {
-        printf("Nhap username: ");
+        system("cls");
+        printf("\n***** Store Management System Using C *****\n\n");
+        printf("Enter Username: ");
         scanf("%49s", username);
-        // Xóa bộ đệm đầu vào
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF)
-            ;
+        getchar();
 
-        printf("Nhap password: ");
+        printf("Enter Password: ");
         getPassword(password, sizeof(password));
 
         FILE *file = fopen(filename, "r");
         if (!file)
         {
-            printf("Khong the mo file!\n");
+            printf("Không thể mở file!\n");
             return 0;
         }
 
@@ -111,11 +111,12 @@ int loginAdmin(const char *filename)
 
         if (found)
         {
+            system("cls");
             return 1; // Đăng nhập thành công
         }
         else
         {
-            printf("Sai tai khoan hoac mat khau.\n");
+            printf("Sai tài khoản hoác mật kháu.\n");
         }
     }
 }

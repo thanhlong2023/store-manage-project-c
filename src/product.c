@@ -17,7 +17,7 @@ void viewProducts()
     loadFromFile("data/products.txt", products, &productCount, sizeof(Product));
     if (productCount == 0)
     {
-        printf("Sản phẩm trống.\n");
+        printf("List Products is empty!\n");
         return;
     }
 
@@ -33,6 +33,7 @@ void viewProducts()
         else
             printf("|------------|----------------------|----------|---------|\n");
     }
+    pressEnterOrExit(1);
 }
 
 void printProduct(Product product)
@@ -46,16 +47,29 @@ void addProduct()
     loadFromFile("data/category.txt", categoriesCopy, &categoryCountCopy, sizeof(Category));
     if (productCount >= MAX_PRODUCTS)
     {
-        printf("Danh sách sản phẩm đã đầy!\n");
+        printf("List Products is full!\n");
         return;
     }
 
     Product newProduct;
 
-    printf("Lựa chọn danh mục sản phẩm:\n");
-    displayCategories();
+    printf("Choice Category:\n");
+    // hiển thị category
+    printf("\n***** CATEGORIES *****\n\n");
+    printf("|=====|============|\n");
+    printf("| %-3s | %-10s |\n", "ID", "Name");
+    printf("|=====|============|\n");
 
-    printf("Nhập Category ID: ");
+    for (int i = 0; i < categoryCountCopy; i++)
+    {
+        printf("| %-3s | %-10s |\n", categoriesCopy[i].categoryId, categoriesCopy[i].categoryName);
+        if (i == categoryCountCopy - 1)
+            printf("|=====|============|\n");
+        else
+            printf("|-----|------------|\n");
+    }
+
+    printf("\nEnter Category ID: ");
     char categoryId[10];
     fgets(categoryId, sizeof(categoryId), stdin);
     categoryId[strcspn(categoryId, "\n")] = '\0';
@@ -69,7 +83,7 @@ void addProduct()
             found = 1;
             strcpy(newProduct.categoryId, categoryId);
 
-            printf("Nhập Product ID: ");
+            printf("Enter Product ID: ");
             char newProductId[10];
             fgets(newProductId, sizeof(newProductId), stdin);
             newProductId[strcspn(newProductId, "\n")] = '\0';
@@ -79,51 +93,63 @@ void addProduct()
             {
                 if (strcmp(newProductId, products[i].productId) == 0)
                 {
-                    printf("ID sản phẩm đa da ton tai!\n");
+                    // printf("ID sản phẩm đa da ton tai!\n");
+                    printf("Product ID is exist!\n");
                     // trùng id thì chỉ thêm số lượng
                     int addQuantity;
-                    printf("Nhập Quantity: ");
+                    // printf("Nhập Quantity: ");
+                    printf("Enter Quantity: ");
                     scanf("%d", &addQuantity);
                     checkNumber(&addQuantity);
                     getchar();
 
                     int totalQuantity = products[i].quantity + addQuantity;
                     products[i].quantity = totalQuantity;
-                    printf("Them thanh cong!\n");
+                    // printf("Them thanh cong!\n");
+                    printf("\nAdd successfully!\n");
                     saveToFile("data/products.txt", products, productCount, sizeof(Product));
+
+                    pressEnterOrExit(1);
                     return;
                 }
             }
             strcpy(newProduct.productId, newProductId);
 
-            printf("Nhập Product Name: ");
+            // printf("Nhập Product Name: ");
+            printf("Enter Product Name: ");
             fgets(newProduct.productName, sizeof(newProduct.productName), stdin);
             newProduct.productName[strlen(newProduct.productName) - 1] = '\0';
 
             int newQuantity;
-            printf("Nhập Quantity: ");
+            // printf("Nhập Quantity: ");
+            printf("Enter Quantity: ");
             scanf("%d", &newQuantity);
             getchar();
             checkNumber(&newQuantity);
             newProduct.quantity = newQuantity;
 
             int newPrice;
-            printf("Nhập Price: ");
+            // printf("Nhập Price: ");
+            printf("Enter Price: ");
             scanf("%d", &newPrice);
             getchar();
             checkNumber(&newPrice);
             newProduct.price = newPrice;
 
             products[productCount++] = newProduct;
-            printf("Thêm sản phẩm thành công!\n");
+            // printf("Thêm sản phẩm thành công!\n");
+            printf("\nAdd product successfully!\n");
 
             saveToFile("data/products.txt", products, productCount, sizeof(Product));
+
+            viewProducts();
             break;
         }
     }
     if (!found)
     {
-        printf("Danh mục không tồn tại!\n");
+        // printf("Danh mục không tồn tại!\n");
+        printf("Category is not exist!\n");
         return;
     }
 }
@@ -132,7 +158,8 @@ void updateProduct()
 {
     loadFromFile("data/products.txt", products, &productCount, sizeof(Product));
     char updateProductId[10];
-    printf("Nhập Product ID: ");
+    // printf("Nhập Product ID: ");
+    printf("Enter Product ID: ");
     fgets(updateProductId, sizeof(updateProductId), stdin);
     updateProductId[strcspn(updateProductId, "\n")] = '\0';
 
@@ -144,16 +171,19 @@ void updateProduct()
             char newProductName[30];
             int newQuantity, newPrice;
 
-            printf("Nhập Product Name: ");
+            // printf("Nhập Product Name: ");
+            printf("Enter Product Name: ");
             fgets(newProductName, sizeof(newProductName), stdin);
             newProductName[strlen(newProductName) - 1] = '\0';
 
-            printf("Nhập Quantity: ");
+            // printf("Nhập Quantity: ");
+            printf("Enter Quantity: ");
             scanf("%d", &newQuantity);
             getchar();
             checkNumber(&newQuantity);
 
-            printf("Nhập Price: ");
+            // printf("Nhập Price: ");
+            printf("Enter Price: ");
             scanf("%d", &newPrice);
             getchar();
             checkNumber(&newPrice);
@@ -161,35 +191,50 @@ void updateProduct()
             strcpy(products[i].productName, newProductName);
             products[i].quantity = newQuantity;
             products[i].price = newPrice;
-            printf("Cập nhật sản phẩm thành công!\n");
+            // printf("Cập nhật sản phẩm thành công!\n");
+            printf("\nUpdate product successfully!\n");
 
             saveToFile("data/products.txt", products, productCount, sizeof(Product));
+
+            viewProducts();
             return;
         }
     }
     if (!found)
-        printf("Không tìm thấy sản phẩm");
+        // printf("Không tìm thấy sản phẩm");
+        printf("Product is not found!");
 }
 
 void deleteProduct()
 {
     loadFromFile("data/products.txt", products, &productCount, sizeof(Product));
     char deleteProductId[10];
-    printf("Nhập Product ID: ");
+    // printf("Nhập Product ID: ");
+    printf("Enter Product ID: ");
     fgets(deleteProductId, sizeof(deleteProductId), stdin);
     deleteProductId[strcspn(deleteProductId, "\n")] = '\0';
 
+    int found = 0;
     for (int i = 0; i < productCount; i++)
     {
         int choice;
         if (strcmp(deleteProductId, products[i].productId) == 0)
         {
+            found = 1;
             do
             {
-                printf("Bạn có muốn xóa sản phẩm không.\n");
+                printf("\nProduct Information:\n");
+                printf("ID: %s\n", products[i].productId);
+                printf("Name: %s\n", products[i].productName);
+                printf("Quantity: %d\n", products[i].quantity);
+                printf("Price: %d\n", products[i].price);
+                printf("\n");
+                // printf("Bạn có muốn xóa sản phẩm không.\n");
+                printf("Do you want to delete this product?\n");
                 printf("1. Yes\n");
                 printf("2. No\n");
-                printf("Nhập lựa chọn của bạn: ");
+                // printf("Nhập lựa chọn của bạn: ");
+                printf("Enter your choice: ");
 
                 scanf("%d", &choice);
                 getchar();
@@ -203,7 +248,8 @@ void deleteProduct()
                         products[j] = products[j + 1];
                     }
                     productCount--;
-                    printf("Xóa sản phẩm thành công!\n");
+                    // printf("Xóa sản phẩm thành công!\n");
+                    printf("Delete product successfully!\n");
 
                     saveToFile("data/products.txt", products, productCount, sizeof(Product));
                     choice = 2;
@@ -212,17 +258,24 @@ void deleteProduct()
                 case 2:
                     return;
                 default:
-                    printf("Lựa chọn không hợp lệ.\n");
+                    // printf("Lựa chọn không hợp lệ.\n");
+                    printf("Invalid choice!\n");
                     break;
                 }
             } while (choice != 2);
         }
     }
+    if (!found)
+    {
+        // printf("Không tìm thấy sản phẩm");
+        printf("Product is not found!\n");
+    }
 }
 void searchProduct()
 {
     loadFromFile("data/products.txt", products, &productCount, sizeof(Product));
-    printf("Nhập tên sản phẩm cần tìm kiếm: ");
+    // printf("Nhập tên sản phẩm cần tìm kiếm: ");
+    printf("Enter product name to search: ");
     char searchProductName[30];
     fgets(searchProductName, sizeof(searchProductName), stdin);
     searchProductName[strcspn(searchProductName, "\n")] = 0;
@@ -230,6 +283,10 @@ void searchProduct()
     toLowerCase(searchProductName);
 
     int found = 0;
+    printf("\n***** PRODUCTS *****\n\n");
+    printf("|============|======================|==========|=========|\n");
+    printf("| ID         | Name                 | Quantity | Price   |\n");
+    printf("|------------|----------------------|----------|---------|\n");
     for (int i = 0; i < productCount; i++)
     {
         char tempProductName[30];
@@ -239,10 +296,21 @@ void searchProduct()
         {
             printProduct(products[i]);
             found = 1;
+            if (i == productCount - 1)
+            {
+                printf("|============|======================|==========|=========|\n");
+            }
+            else
+            {
+                printf("|------------|----------------------|----------|---------|\n");
+            }
         }
     }
     if (!found)
-        printf("Không tìm thấy sản phẩm nào\n");
+    { // printf("Không tìm thấy sản phẩm nào\n");
+        printf("No product found!\n");
+    }
+    pressEnterOrExit(1);
 }
 void bubbleSortAsc(Product arr[], int n)
 {
@@ -258,7 +326,8 @@ void bubbleSortAsc(Product arr[], int n)
             }
         }
     }
-    printf("Săp xếp thành công");
+    // printf("Săp xếp thành công");
+    printf("\nSorting successfully!\n");
 }
 void bubbleSortDesc(Product arr[], int n)
 {
@@ -274,7 +343,8 @@ void bubbleSortDesc(Product arr[], int n)
             }
         }
     }
-    printf("Săp xếp thành công");
+    // printf("Săp xếp thành công");
+    printf("\nSorting successfully!\n");
 }
 void sortProduct()
 {
@@ -282,12 +352,17 @@ void sortProduct()
     int choice;
     do
     {
-        printf("1. Sắp xếp giá tăng dần.\n");
-        printf("2. Sắp xếp giá dảm dần.\n");
-        printf("0. Thoát.\n");
-        printf("Lựa chọn: ");
+        // printf("1. Sắp xếp giá tăng dần.\n");
+        printf("[1]. Sort by price ascending.\n");
+        // printf("2. Sắp xếp giá dảm dần.\n");
+        printf("[2]. Sort by price descending.\n");
+        // printf("0. Thoát.\n");
+        printf("[0]. Exit.\n");
+        // printf("Lựa chọn: ");
+        printf("Enter your choice: ");
         scanf("%d", &choice);
         getchar();
+        printf("\033[H\033[J");
         switch (choice)
         {
         case 1:
@@ -309,7 +384,8 @@ void sortProduct()
         case 0:
             break;
         default:
-            printf("Lựa chọn không hợp lệ!\n");
+            // printf("Lựa chọn không hợp lệ!\n");
+            printf("Invalid choice!\n");
             break;
         }
     } while (choice != 0);
@@ -317,23 +393,33 @@ void sortProduct()
 void filterProduct()
 {
     loadFromFile("data/category.txt", categoriesCopy, &categoryCountCopy, sizeof(Category));
+    loadFromFile("data/products.txt", products, &productCount, sizeof(Product));
     int choice;
     do
     {
-        printf("1. Lọc sản phẩm theo Category.\n");
-        printf("2. Lọc sản phẩm theo giá tiền.\n");
-        printf("0. Thoát\n");
-        printf("Lựa chọn: ");
+        printf("\n***** FILTER MENU *****\n\n");
+        // printf("1. Lọc sản phẩm theo Category.\n");
+        printf("[1]. Filter products by category.\n");
+        // printf("2. Lọc sản phẩm theo giá tiền.\n");
+        printf("[2]. Filter products by price.\n");
+        // printf("0. Thoát\n");
+        printf("[0]. Exit\n");
+        // printf("Lựa chọn: ");
+        printf("Enter your choice: ");
         scanf("%d", &choice);
+        getchar();
+        printf("\033[H\033[J");
         switch (choice)
         {
         case 1:
         {
-            displayCategories();
+            displayCategoriesNotPress();
             char filterID[10];
-            printf("Nhập Category ID: ");
+            // printf("Nhập Category ID: ");
+            printf("Enter Category ID: ");
             scanf("%s", filterID);
             getchar();
+            printf("%s\n", filterID);
 
             int foundCategory = 0;
             for (int i = 0; i < categoryCountCopy; i++)
@@ -351,49 +437,63 @@ void filterProduct()
                         }
                     }
                     if (!found)
-                        printf("Không có sản phẩm.\n");
+                        // printf("Không có sản phẩm.\n");
+                        printf("No products found.\n");
                 }
             }
             if (!foundCategory)
             {
-                printf("Danh mục không tồn tại.\n");
+                // printf("Danh mục không tồn tại.\n");
+                printf("Category does not exist.\n");
             }
             break;
         }
         case 2:
         {
             double startPrice, endPrice;
-            int found = 0; // Cờ kiểm tra có sản phẩm nào hợp lệ không
+            int found = 0;
 
-            printf("Nhập giá bắt đầu: ");
+            printf("\n***** FILTER MENU BY PRICE *****\n\n");
+            // printf("Nhập giá bắt đầu: ");
+            printf("Enter start price: ");
             scanf("%lf", &startPrice);
-            printf("Nhập giá kết thúc: ");
+            // printf("Nhập giá kết thúc: ");
+            printf("Enter end price: ");
             scanf("%lf", &endPrice);
 
-            if (startPrice > endPrice) // Kiểm tra nhập sai
+            if (startPrice > endPrice)
             {
                 printf("Khoảng giá vô lý!\n");
                 break;
             }
-
+            printf("\n***** PRODUCTS *****\n\n");
+            printf("|============|======================|==========|=========|\n");
+            printf("| ID         | Name                 | Quantity | Price   |\n");
+            printf("|------------|----------------------|----------|---------|\n");
             for (int i = 0; i < productCount; i++)
             {
                 if (products[i].price >= startPrice && products[i].price <= endPrice)
                 {
                     printProduct(products[i]);
-                    found = 1; // Đánh dấu tìm thấy ít nhất một sản phẩm
+                    found = 1;
+                    if (i == productCount - 1)
+                        printf("|============|======================|==========|=========|\n");
+                    else
+                        printf("|------------|----------------------|----------|---------|\n");
                 }
             }
 
             if (!found)
             {
-                printf("Không có sản phẩm nào trong khoảng giá này!\n");
+                // printf("Không có sản phẩm nào trong khoảng giá này!\n");
+                printf("No products within the specified price range!\n");
             }
             break;
         }
 
         default:
-            printf("Lựa chọn không hợp lệ.\n");
+            // printf("Lựa chọn không hợp lệ.\n");
+            printf("Invalid choice!\n");
             break;
         }
     } while (choice != 0);

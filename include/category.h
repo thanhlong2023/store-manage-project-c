@@ -13,6 +13,7 @@ typedef struct
 
 // Khai báo hàm xử lý Category
 void displayCategories();
+void displayCategoriesNotPress();
 void addCategory();
 void updateCategory();
 void deleteCategory();

@@ -6,7 +6,7 @@ int main()
 {
     if (loginAdmin("data/user.txt"))
     {
-        printf("Dang nhap thanh cong!\n");
+        printf("Login Successfully!\n");
         mainMenu(); // Gọi menu chính sau khi đăng nhập thành công
     }
     return 0;

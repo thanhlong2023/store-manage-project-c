@@ -3,6 +3,7 @@
 #include "../include/category.h"
 #include "../include/product.h"
 #include "../include/order.h"
+#include "../include/file_utils.h"
 
 void mainMenu()
 {
@@ -10,31 +11,42 @@ void mainMenu()
 
     do
     {
-        printf("\n===== QUAN LY CUA HANG =====\n");
-        printf("1. Quan ly danh muc\n");
-        printf("2. Quan ly san pham\n");
-        printf("3. Quan ly don hang\n");
-        printf("4. Thoat\n");
-        printf("============================\n");
-        printf("Nhap lua chon cua ban: ");
+        printf("\n***Student Management System Using C***\n\n");
+
+        printCentered("CHOOSE YOUR ROLE");
+        printf("========================================\n");
+        // printf("[1]. Quản lý danh mục.\n");
+        printf("[1]. Manage categories.\n");
+        // printf("[2]. Quản lý sản phẩm.\n");
+        printf("[2]. Manage products.\n");
+        // printf("[3]. Quản lý đơn hàng.\n");
+        printf("[3]. Manage orders.\n");
+        // printf("[4]. Thoát.\n");
+        printf("[4]. Exit.\n");
+        printf("========================================\n");
+        printf("Enter The Choice: ");
         scanf("%d", &choice);
+        printf("\033[H\033[J");
 
         switch (choice)
         {
         case 1:
             categoryMenu();
+
             break;
         case 2:
             productMenu();
+
             break;
         case 3:
             orderMenu();
+
             break;
         case 4:
-            printf("Dang thoat chuong trinh...\n");
+            printf("Returning to the main menu...\n");
             break;
         default:
-            printf("Lua chon khong hop le! Vui long nhap so tu 1 den 4.\n");
+            printf("Invalid choice!\n");
             break;
         }
     } while (choice != 4);
@@ -46,19 +58,29 @@ void categoryMenu()
 
     do
     {
-        printf("\n===== QUAN LY DANH MUC =====\n");
-        printf("1. Xem danh sach danh muc\n");
-        printf("2. Them danh muc\n");
-        printf("3. Sua danh muc\n");
-        printf("4. Xoa danh muc\n");
-        printf("5. Tim kiem danh muc theo ten\n");
-        printf("6. Sap xep danh muc theo ten\n");
-        printf("0. Quay lai menu chinh\n");
-        printf("============================\n");
-        printf("Nhap lua chon cua ban: ");
+        printf("\n***Student Management System Using C***\n\n");
+
+        printCentered("CATEGORY MENU");
+        printf("========================================\n");
+        // printf("[1]. Xem danh sách danh mục.\n");
+        printf("[1]. View categorie list.\n");
+        // printf("[2]. Thêm danh mục.\n");
+        printf("[2]. Add category.\n");
+        // printf("[3]. Sửa danh mục.\n");
+        printf("[3]. Update category.\n");
+        // printf("[4]. Xóa danh mục.\n");
+        printf("[4]. Delete category.\n");
+        // printf("[5]. Tìm kiếm danh mục theo tên.\n");
+        printf("[5]. Search category by name.\n");
+        // printf("[6]. Sắp xếp danh mục theo tên.\n");
+        printf("[6]. Sort category by name.\n");
+        // printf("[0]. Quay lại.\n");
+        printf("[0]. Back.\n");
+        printf("========================================\n");
+        printf("Enter The Choice: ");
         scanf("%d", &choice);
         getchar();
-
+        printf("\033[H\033[J");
         switch (choice)
         {
         case 1:
@@ -71,19 +93,23 @@ void categoryMenu()
             updateCategory();
             break;
         case 4:
+
             deleteCategory();
             break;
         case 5:
+
             searchCategory();
             break;
         case 6:
+
             sortCategory();
+            // printf("\033[H\033[J");
             break;
         case 0:
-            printf("Quay lai menu chinh...\n");
+            printf("Returning to the main menu...\n");
             break;
         default:
-            printf("Lua chon khong hop le!\n");
+            printf("Invalid choice!\n");
         }
     } while (choice != 0);
 }
@@ -94,48 +120,66 @@ void productMenu()
 
     do
     {
-        printf("\n===== QUAN LY SAN PHAM =====\n");
-        printf("1. Xem danh sach san pham\n");
-        printf("2. Them san pham\n");
-        printf("3. Sua san pham\n");
-        printf("4. Xoa san pham\n");
-        printf("5. Tim kiem san pham theo ten\n");
-        printf("6. Sap xep san pham theo gia tien\n");
-        printf("7. Loc san pham\n");
-        printf("0. Quay lai menu chinh\n");
-        printf("============================\n");
-        printf("Nhap lua chon cua ban: ");
+        printf("\n***Student Management System Using C***\n\n");
+
+        printCentered("PRODUCT MENU");
+        printf("========================================\n");
+        // printf("[1]. Xem danh sách sản phẩm.\n");
+        printf("[1]. View product list.\n");
+        // printf("[2]. Thêm sản phẩm.\n");
+        printf("[2]. Add product.\n");
+        // printf("[3]. Sửa sản phẩm.\n");
+        printf("[3]. Update product.\n");
+        // printf("[4]. Xóa sản phẩm.\n");
+        printf("[4]. Delete product.\n");
+        // printf("[5]. Tìm kiếm sản phẩm theo tên.\n");
+        printf("[5]. Search product by name.\n");
+        // printf("[6]. Sắp xếp sản phẩm theo giá tiền.\n");
+        printf("[6]. Sort product by price.\n");
+        // printf("[7]. Lọc sản phẩm.\n");
+        printf("[7]. Filter product.\n");
+        // printf("[0]. Quay lại.\n");
+        printf("[0]. Back.\n");
+        printf("========================================\n");
+        printf("Enter The Choice: ");
         scanf("%d", &choice);
         getchar();
-
+        printf("\033[H\033[J");
         switch (choice)
         {
         case 1:
             viewProducts();
+
             break;
         case 2:
             addProduct();
+
             break;
         case 3:
             updateProduct();
+
             break;
         case 4:
             deleteProduct();
+
             break;
         case 5:
             searchProduct();
+
             break;
         case 6:
             sortProduct();
+
             break;
         case 7:
             filterProduct();
+
             break;
         case 0:
-            printf("Quay lai menu chinh...\n");
+            printf("Returning to the main menu...\n");
             break;
         default:
-            printf("Lua chon khong hop le!\n");
+            printf("Invalid choice!\n");
             break;
         }
     } while (choice != 0);
@@ -147,27 +191,33 @@ void orderMenu()
 
     do
     {
-        printf("\n===== QUAN LY DON HANG =====\n");
-        printf("1. Tao don hang\n");
-        printf("2. Xem danh sach don hang\n");
-        printf("3. Quay lai menu chinh\n");
-        printf("============================\n");
-        printf("Nhap lua chon cua ban: ");
+        printf("\n***Student Management System Using C***\n\n");
+        printCentered("ORDER MENU");
+        printf("========================================\n");
+        // printf("[1]. Tạo đơn hàng.\n");
+        printf("[1]. Create order.\n");
+        printf("[2]. View order list.\n");
+        printf("[3]. Back.\n");
+        printf("========================================\n");
+        printf("Enter The Choice: ");
         scanf("%d", &choice);
-
+        getchar();
+        printf("\033[H\033[J");
         switch (choice)
         {
         case 1:
             createOrder();
+
             break;
         case 2:
             viewOrders();
+
             break;
         case 3:
-            printf("Quay lai menu chinh...\n");
+            printf("Returning to the main menu...\n");
             break;
         default:
-            printf("Lua chon khong hop le! Vui long nhap so tu 1 den 3.\n");
+            printf("Invalid choice!\n");
             break;
         }
     } while (choice != 3);

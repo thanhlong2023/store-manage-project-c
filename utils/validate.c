@@ -9,7 +9,7 @@ void checkNumber(int *number)
     // Nếu số nhập vào < 0, yêu cầu nhập lại
     while (*number < 0)
     {
-        printf("Phải nhập số lớn hơn 0. Nhập lại: ");
+        printf("Please enter a number greater than 0. Try again: ");
         scanf("%d", number);
         getchar();
     }

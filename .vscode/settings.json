@@ -2,6 +2,7 @@
     "files.associations": {
         "category.h": "c",
         "file_utils.h": "c",
-        "product.h": "c"
+        "product.h": "c",
+        "order.h": "c"
     }
 }
