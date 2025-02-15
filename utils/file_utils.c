@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 void saveToFile(const char *filename, void *array, int count, size_t elementSize)
 {

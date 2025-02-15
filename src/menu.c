@@ -11,7 +11,7 @@ void mainMenu()
 
     do
     {
-        printf("\n***Student Management System Using C***\n\n");
+        printf("\n***Store Management System Using C***\n\n");
 
         printCentered("CHOOSE YOUR ROLE");
         printf("========================================\n");

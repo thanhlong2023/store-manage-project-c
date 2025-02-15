@@ -43,7 +43,6 @@
 #include <stdlib.h>
 #include "../include/auth.h"
 
-// Hàm đọc mật khẩu và hiển thị *
 void getPassword(char *password, int max_length)
 {
     int i = 0;
@@ -81,8 +80,9 @@ int loginAdmin(const char *filename)
 
     while (1)
     {
-        system("cls");
         printf("\n***** Store Management System Using C *****\n\n");
+
+        printf("===== Login Admin =====\n\n");
         printf("Enter Username: ");
         scanf("%49s", username);
         getchar();
@@ -93,7 +93,7 @@ int loginAdmin(const char *filename)
         FILE *file = fopen(filename, "r");
         if (!file)
         {
-            printf("Không thể mở file!\n");
+            printf("Do not open file!\n");
             return 0;
         }
 
@@ -116,7 +116,9 @@ int loginAdmin(const char *filename)
         }
         else
         {
-            printf("Sai tài khoản hoác mật kháu.\n");
+            system("cls");
+            printf("\nWrong username or password.\n");
+            continue;
         }
     }
 }

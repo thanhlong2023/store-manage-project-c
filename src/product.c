@@ -22,23 +22,23 @@ void viewProducts()
     }
 
     printf("\n***** PRODUCTS *****\n\n");
-    printf("|============|======================|==========|=========|\n");
-    printf("| ID         | Name                 | Quantity | Price   |\n");
-    printf("|------------|----------------------|----------|---------|\n");
+    printf("|============|================================|==========|==========|\n");
+    printf("| %-10s | %-30s | %8s | %8s |\n", "ID", "Product Name", "Quantity", "Price");
+    printf("|============|================================|==========|==========|\n");
     for (int i = 0; i < productCount; i++)
     {
         printProduct(products[i]);
         if (i == productCount - 1)
-            printf("|============|======================|==========|=========|\n");
+            printf("|============|================================|==========|==========|\n");
         else
-            printf("|------------|----------------------|----------|---------|\n");
+            printf("|------------|--------------------------------|----------|----------|\n");
     }
     pressEnterOrExit(1);
 }
 
 void printProduct(Product product)
 {
-    printf("| %-10s | %-20s | %8d | %7d |\n", product.productId, product.productName, product.quantity, product.price);
+    printf("| %-10s | %-30s | %8d | %8d |\n", product.productId, product.productName, product.quantity, product.price);
 }
 
 void addProduct()
@@ -51,239 +51,528 @@ void addProduct()
         return;
     }
 
-    Product newProduct;
-
     printf("Choice Category:\n");
     // hiển thị category
     printf("\n***** CATEGORIES *****\n\n");
-    printf("|=====|============|\n");
-    printf("| %-3s | %-10s |\n", "ID", "Name");
-    printf("|=====|============|\n");
+    printf("==================================================\n");
+    printf("| %-10s | %-30s |\n", "ID", "Name");
+    printf("==================================================\n");
 
     for (int i = 0; i < categoryCountCopy; i++)
     {
-        printf("| %-3s | %-10s |\n", categoriesCopy[i].categoryId, categoriesCopy[i].categoryName);
+        printf("| %-3s | %-30s |\n", categoriesCopy[i].categoryId, categoriesCopy[i].categoryName);
         if (i == categoryCountCopy - 1)
-            printf("|=====|============|\n");
+            printf("==================================================\n");
         else
-            printf("|-----|------------|\n");
+            printf("--------------------------------------------------\n");
     }
 
-    printf("\nEnter Category ID: ");
-    char categoryId[10];
-    fgets(categoryId, sizeof(categoryId), stdin);
-    categoryId[strcspn(categoryId, "\n")] = '\0';
-
-    // kiểm tra categoryId co ton tai khong int found = 0;
-    int found = 0;
-    for (int i = 0; i < categoryCountCopy; i++)
+    int flag;
+    char categoryId[110];
+    do
     {
-        if (strcmp(categoryId, categoriesCopy[i].categoryId) == 0)
+        flag = 0;
+        printf("\nEnter Category ID (Enter 0 to cancel): ");
+        fgets(categoryId, sizeof(categoryId), stdin);
+        categoryId[strcspn(categoryId, "\n")] = '\0';
+
+        if (strcmp(categoryId, "0") == 0)
         {
-            found = 1;
-            strcpy(newProduct.categoryId, categoryId);
-
-            printf("Enter Product ID: ");
-            char newProductId[10];
-            fgets(newProductId, sizeof(newProductId), stdin);
-            newProductId[strcspn(newProductId, "\n")] = '\0';
-
-            // kiểm tra id sản phẩm có tồn tại không
-            for (int i = 0; i < productCount; i++)
-            {
-                if (strcmp(newProductId, products[i].productId) == 0)
-                {
-                    // printf("ID sản phẩm đa da ton tai!\n");
-                    printf("Product ID is exist!\n");
-                    // trùng id thì chỉ thêm số lượng
-                    int addQuantity;
-                    // printf("Nhập Quantity: ");
-                    printf("Enter Quantity: ");
-                    scanf("%d", &addQuantity);
-                    checkNumber(&addQuantity);
-                    getchar();
-
-                    int totalQuantity = products[i].quantity + addQuantity;
-                    products[i].quantity = totalQuantity;
-                    // printf("Them thanh cong!\n");
-                    printf("\nAdd successfully!\n");
-                    saveToFile("data/products.txt", products, productCount, sizeof(Product));
-
-                    pressEnterOrExit(1);
-                    return;
-                }
-            }
-            strcpy(newProduct.productId, newProductId);
-
-            // printf("Nhập Product Name: ");
-            printf("Enter Product Name: ");
-            fgets(newProduct.productName, sizeof(newProduct.productName), stdin);
-            newProduct.productName[strlen(newProduct.productName) - 1] = '\0';
-
-            int newQuantity;
-            // printf("Nhập Quantity: ");
-            printf("Enter Quantity: ");
-            scanf("%d", &newQuantity);
-            getchar();
-            checkNumber(&newQuantity);
-            newProduct.quantity = newQuantity;
-
-            int newPrice;
-            // printf("Nhập Price: ");
-            printf("Enter Price: ");
-            scanf("%d", &newPrice);
-            getchar();
-            checkNumber(&newPrice);
-            newProduct.price = newPrice;
-
-            products[productCount++] = newProduct;
-            // printf("Thêm sản phẩm thành công!\n");
-            printf("\nAdd product successfully!\n");
-
-            saveToFile("data/products.txt", products, productCount, sizeof(Product));
-
-            viewProducts();
-            break;
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
         }
-    }
-    if (!found)
+        // kiểm tra độ dài
+        if (strlen(categoryId) > 10)
+        {
+            printf("Category ID must be less than 10 characters!\n");
+            flag = 1;
+            continue;
+        }
+        // kiểm tra rỗng
+        if (categoryId[0] == '\0')
+        {
+            printf("Category ID must not be empty!\n");
+            flag = 1;
+            continue;
+        }
+        // kiểm tra id chưa tồn tại không được thêm sản phẩm
+
+        for (int i = 0; i < categoryCountCopy; i++)
+        {
+            if (strcmp(categoryId, categoriesCopy[i].categoryId) == 0)
+            {
+
+                break;
+            }
+            else
+            {
+                printf("Category ID does not exist!\n");
+                flag = 1;
+                break;
+            }
+        }
+
+    } while (flag);
+
+    char newProductId[110];
+    char newProductName[130];
+    int newQuantity, newPrice;
+    do
     {
-        // printf("Danh mục không tồn tại!\n");
-        printf("Category is not exist!\n");
-        return;
-    }
+        flag = 0;
+        printf("\nEnter Product ID (Enter 0 to cancel): ");
+        fgets(newProductId, sizeof(newProductId), stdin);
+        newProductId[strcspn(newProductId, "\n")] = '\0';
+
+        if (strcmp(newProductId, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
+        // kiểm tra độ dài
+        if (strlen(newProductId) > 10)
+        {
+            printf("Product ID must be less than 10 characters!\n");
+            flag = 1;
+            continue;
+        }
+        // kiểm tra rỗng
+        if (newProductId[0] == '\0')
+        {
+            printf("Product ID must not be empty!\n");
+            flag = 1;
+            continue;
+        }
+        // kiểm tra trùng id
+        int isExist = 0;
+        for (int i = 0; i < productCount; i++)
+        {
+            if (strcmp(newProductId, products[i].productId) == 0)
+            {
+                isExist = 1;
+                break;
+            }
+        }
+        if (isExist == 1)
+        {
+            printf("Product ID already exist! Please choose another ID\n");
+            flag = 1;
+            continue;
+        }
+    } while (flag);
+
+    do
+    {
+        flag = 0;
+        printf("\nEnter Product Name (Enter 0 to cancel): ");
+        fgets(newProductName, sizeof(newProductName), stdin);
+        newProductName[strcspn(newProductName, "\n")] = '\0';
+
+        if (strcmp(newProductName, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
+        // kiểm tra độ dài
+        if (strlen(newProductName) > 30)
+        {
+            printf("Product Name must be less than 30 characters!\n");
+            flag = 1;
+            continue;
+        }
+        // kiểm tra rỗng
+        if (newProductName[0] == '\0')
+        {
+            printf("Product Name must not be empty!\n");
+            flag = 1;
+            continue;
+        }
+        // kiểm tra trùng name
+        int isExist = 0;
+        for (int i = 0; i < productCount; i++)
+        {
+            if (strcmp(newProductName, products[i].productName) == 0)
+            {
+                isExist = 1;
+                break;
+            }
+        }
+        if (isExist == 1)
+        {
+            printf("Product Name already exist! Please choose another Name\n");
+            flag = 1;
+            continue;
+        }
+    } while (flag);
+
+    do
+    {
+        flag = 0;
+        printf("\nEnter Quantity (Enter 0 to cancel): ");
+        scanf("%d", &newQuantity);
+        getchar();
+
+        if (strcmp(newProductId, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
+
+        // kiểm tra số nguyên
+        if (newQuantity < 0)
+        {
+            printf("Quantity must be a positive number!\n");
+            flag = 1;
+            continue;
+        }
+
+    } while (flag);
+
+    do
+    {
+        flag = 0;
+        printf("\nEnter Price (Enter 0 to cancel): ");
+        scanf("%d", &newPrice);
+        getchar();
+
+        if (strcmp(newProductId, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
+
+        // kiểm tra số nguyên
+        if (newPrice < 0)
+        {
+            printf("Price must be a positive number!\n");
+            flag = 1;
+            continue;
+        }
+
+    } while (flag);
+
+    strcpy(products[productCount].categoryId, categoryId);
+    strcpy(products[productCount].productId, newProductId);
+    strcpy(products[productCount].productName, newProductName);
+    products[productCount].quantity = newQuantity;
+    products[productCount].price = newPrice;
+    productCount++;
+
+    saveToFile("data/products.txt", products, productCount, sizeof(Product));
+    printf("Product added successfully!\n");
+
+    viewProducts();
 }
 
 void updateProduct()
 {
     loadFromFile("data/products.txt", products, &productCount, sizeof(Product));
-    char updateProductId[10];
-    // printf("Nhập Product ID: ");
-    printf("Enter Product ID: ");
-    fgets(updateProductId, sizeof(updateProductId), stdin);
-    updateProductId[strcspn(updateProductId, "\n")] = '\0';
 
-    int found = 0;
+    char updateProductId[100];
+    int flag;
+    do
+    {
+        flag = 0;
+
+        printf("\nEnter Product ID (Enter 0 to cancel): ");
+        fgets(updateProductId, sizeof(updateProductId), stdin);
+        updateProductId[strcspn(updateProductId, "\n")] = '\0';
+
+        if (strcmp(updateProductId, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
+
+        // kiểm tra độ dài
+        if (strlen(updateProductId) > 10)
+        {
+            printf("Product ID must be less than 10 characters!\n");
+            continue;
+        }
+        // kiểm tra rỗng
+        if (updateProductId[0] == '\0')
+        {
+            printf("Product ID must not be empty!\n");
+            continue;
+        }
+
+        int isExist = 0;
+        for (int i = 0; i < productCount; i++)
+        {
+            if (strcmp(updateProductId, products[i].productId) == 0)
+            {
+                isExist = 1;
+                break;
+            }
+        }
+        if (isExist == 0)
+        {
+            printf("Can't find Product!\n");
+            flag = 1;
+            continue;
+        }
+    } while (flag);
+
+    char updateProductName[100];
+    do
+    {
+        flag = 0;
+        printf("\nEnter Product Name (Enter 0 to cancel): ");
+        fgets(updateProductName, sizeof(updateProductName), stdin);
+        updateProductName[strcspn(updateProductName, "\n")] = '\0';
+
+        if (strcmp(updateProductName, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
+
+        // kiểm tra độ dài
+        if (strlen(updateProductName) > 30)
+        {
+            printf("Product Name must be less than 30 characters!\n");
+            flag = 1;
+            continue;
+        }
+        // kiểm tra rỗng
+        if (updateProductName[0] == '\0')
+        {
+            printf("Product Name must not be empty!\n");
+            flag = 1;
+            continue;
+        }
+
+        int isExist = 0;
+        for (int i = 0; i < productCount; i++)
+        {
+            if (strcmp(updateProductName, products[i].productName) == 0)
+            {
+                isExist = 1;
+                break;
+            }
+        }
+        if (isExist)
+        {
+            printf("Product Name is exist!\n");
+            flag = 1;
+            continue;
+        }
+    } while (flag);
+
+    int newQuantity;
+    do
+    {
+        flag = 0;
+        printf("\nEnter Quantity (Enter 0 to cancel): ");
+        scanf("%d", &newQuantity);
+        getchar();
+
+        if (strcmp(updateProductId, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
+
+        if (newQuantity < 0)
+        {
+            printf("Quantity must be a positive number!\n");
+            flag = 1;
+            continue;
+        }
+
+    } while (flag);
+
+    int newPrice;
+    do
+    {
+        flag = 0;
+        printf("\nEnter Price (Enter 0 to cancel): ");
+        scanf("%d", &newPrice);
+        getchar();
+
+        if (strcmp(updateProductId, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
+
+        if (newPrice < 0)
+        {
+            printf("Price must be a positive number!\n");
+            flag = 1;
+            continue;
+        }
+
+    } while (flag);
+
     for (int i = 0; i < productCount; i++)
     {
         if (strcmp(updateProductId, products[i].productId) == 0)
         {
-            char newProductName[30];
-            int newQuantity, newPrice;
-
-            // printf("Nhập Product Name: ");
-            printf("Enter Product Name: ");
-            fgets(newProductName, sizeof(newProductName), stdin);
-            newProductName[strlen(newProductName) - 1] = '\0';
-
-            // printf("Nhập Quantity: ");
-            printf("Enter Quantity: ");
-            scanf("%d", &newQuantity);
-            getchar();
-            checkNumber(&newQuantity);
-
-            // printf("Nhập Price: ");
-            printf("Enter Price: ");
-            scanf("%d", &newPrice);
-            getchar();
-            checkNumber(&newPrice);
-
-            strcpy(products[i].productName, newProductName);
+            strcpy(products[i].productName, updateProductName);
             products[i].quantity = newQuantity;
             products[i].price = newPrice;
-            // printf("Cập nhật sản phẩm thành công!\n");
-            printf("\nUpdate product successfully!\n");
 
-            saveToFile("data/products.txt", products, productCount, sizeof(Product));
-
-            viewProducts();
-            return;
+            break;
         }
     }
-    if (!found)
-        // printf("Không tìm thấy sản phẩm");
-        printf("Product is not found!");
+
+    printf("Product updated successfully!\n");
+    saveToFile("data/products.txt", products, productCount, sizeof(Product));
+
+    viewProducts();
 }
 
 void deleteProduct()
 {
     loadFromFile("data/products.txt", products, &productCount, sizeof(Product));
-    char deleteProductId[10];
-    // printf("Nhập Product ID: ");
-    printf("Enter Product ID: ");
-    fgets(deleteProductId, sizeof(deleteProductId), stdin);
-    deleteProductId[strcspn(deleteProductId, "\n")] = '\0';
 
-    int found = 0;
+    char deleteProductId[111];
+    int flag;
+    do
+    {
+        flag = 0;
+        printf("\nEnter Product ID (Enter 0 to cancel): ");
+        fgets(deleteProductId, sizeof(deleteProductId), stdin);
+        deleteProductId[strcspn(deleteProductId, "\n")] = '\0';
+
+        if (strcmp(deleteProductId, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
+
+        // kiểm tra độ dài
+        if (strlen(deleteProductId) > 10)
+        {
+            printf("Product ID must be less than 10 characters!\n");
+            flag = 1;
+            continue;
+        }
+        // kiểm tra rỗng
+        if (deleteProductId[0] == '\0')
+        {
+            printf("Product ID must not be empty!\n");
+            flag = 1;
+            continue;
+        }
+
+        int isExist = 0;
+        for (int i = 0; i < productCount; i++)
+        {
+            if (strcmp(deleteProductId, products[i].productId) == 0)
+            {
+                isExist = 1;
+                break;
+            }
+        }
+        if (isExist == 0)
+        {
+            printf("Can't find Product!\n");
+            flag = 1;
+            continue;
+        }
+    } while (flag);
+
+    printf("The product will be deleted: ");
+
+    printf("\nProduct ID: %s", deleteProductId);
+    printf("\nProduct Name: %s", products[0].productName);
+    printf("\nQuantity: %d", products[0].quantity);
+    printf("\nPrice: %d", products[0].price);
+    printf("\n");
+
+    printf("Are you sure you want to delete this product? (Y/N): ");
+    char choice;
+    scanf("%c", &choice);
+    getchar();
+
+    if (choice != 'Y' && choice != 'y')
+    {
+        printf("Product deletion cancelled.\n");
+        return;
+    }
+
     for (int i = 0; i < productCount; i++)
     {
-        int choice;
         if (strcmp(deleteProductId, products[i].productId) == 0)
         {
-            found = 1;
-            do
+            for (int j = i; j < productCount - 1; j++)
             {
-                printf("\nProduct Information:\n");
-                printf("ID: %s\n", products[i].productId);
-                printf("Name: %s\n", products[i].productName);
-                printf("Quantity: %d\n", products[i].quantity);
-                printf("Price: %d\n", products[i].price);
-                printf("\n");
-                // printf("Bạn có muốn xóa sản phẩm không.\n");
-                printf("Do you want to delete this product?\n");
-                printf("1. Yes\n");
-                printf("2. No\n");
-                // printf("Nhập lựa chọn của bạn: ");
-                printf("Enter your choice: ");
-
-                scanf("%d", &choice);
-                getchar();
-
-                switch (choice)
-                {
-                case 1:
-                {
-                    for (int j = i; j < productCount - 1; j++)
-                    {
-                        products[j] = products[j + 1];
-                    }
-                    productCount--;
-                    // printf("Xóa sản phẩm thành công!\n");
-                    printf("Delete product successfully!\n");
-
-                    saveToFile("data/products.txt", products, productCount, sizeof(Product));
-                    choice = 2;
-                    return;
-                }
-                case 2:
-                    return;
-                default:
-                    // printf("Lựa chọn không hợp lệ.\n");
-                    printf("Invalid choice!\n");
-                    break;
-                }
-            } while (choice != 2);
+                products[j] = products[j + 1];
+            }
+            productCount--;
+            saveToFile("data/products.txt", products, productCount, sizeof(Product));
+            break;
         }
     }
-    if (!found)
-    {
-        // printf("Không tìm thấy sản phẩm");
-        printf("Product is not found!\n");
-    }
+
+    printf("Product deleted successfully!\n");
+    viewProducts();
 }
 void searchProduct()
 {
     loadFromFile("data/products.txt", products, &productCount, sizeof(Product));
-    // printf("Nhập tên sản phẩm cần tìm kiếm: ");
-    printf("Enter product name to search: ");
-    char searchProductName[30];
-    fgets(searchProductName, sizeof(searchProductName), stdin);
-    searchProductName[strcspn(searchProductName, "\n")] = 0;
+    int flag;
+    char searchProductName[130];
+    do
+    {
+        flag = 0;
+        printf("Enter product name to search (Enter 0 to cancel): ");
+        fgets(searchProductName, sizeof(searchProductName), stdin);
+        searchProductName[strcspn(searchProductName, "\n")] = 0;
 
-    toLowerCase(searchProductName);
+        if (strcmp(searchProductName, "0") == 0)
+        {
+            system("cls");
+            printf("Operation cancelled.\n");
+            return;
+        }
 
-    int found = 0;
-    printf("\n***** PRODUCTS *****\n\n");
+        if (searchProductName[0] == '\0')
+        {
+            printf("Product name must not be empty!\n");
+            flag = 1;
+            continue;
+        }
+
+        if (strlen(searchProductName) > 30)
+        {
+            printf("Product name must be less than 30 characters!\n");
+            flag = 1;
+            continue;
+        }
+
+        int isExist = 0;
+        for (int i = 0; i < productCount; i++)
+        {
+            if (strstr(products[i].productName, searchProductName))
+            {
+                isExist = 1;
+                break;
+            }
+        }
+        if (isExist == 0)
+        {
+            printf("Product not found!\n");
+            flag = 1;
+            continue;
+        }
+
+    } while (flag);
+
+    printf("\n***** FIND PRODUCT BY NAME *****\n\n");
     printf("|============|======================|==========|=========|\n");
     printf("| ID         | Name                 | Quantity | Price   |\n");
     printf("|------------|----------------------|----------|---------|\n");
@@ -295,7 +584,7 @@ void searchProduct()
         if (strstr(tempProductName, searchProductName))
         {
             printProduct(products[i]);
-            found = 1;
+
             if (i == productCount - 1)
             {
                 printf("|============|======================|==========|=========|\n");
@@ -305,10 +594,6 @@ void searchProduct()
                 printf("|------------|----------------------|----------|---------|\n");
             }
         }
-    }
-    if (!found)
-    { // printf("Không tìm thấy sản phẩm nào\n");
-        printf("No product found!\n");
     }
     pressEnterOrExit(1);
 }
@@ -416,12 +701,22 @@ void filterProduct()
             displayCategoriesNotPress();
             char filterID[10];
             // printf("Nhập Category ID: ");
-            printf("Enter Category ID: ");
+            printf("Enter Category ID (Enter 0 to cancel): ");
             scanf("%s", filterID);
             getchar();
-            printf("%s\n", filterID);
+
+            if (strcmp(filterID, "0") == 0)
+            {
+                system("cls");
+                printf("Operation cancelled.\n");
+                return;
+            }
 
             int foundCategory = 0;
+            printf("\n***** PRODUCTS *****\n\n");
+            printf("|============|======================|==========|=========|\n");
+            printf("| ID         | Name                 | Quantity | Price   |\n");
+            printf("|------------|----------------------|----------|---------|\n");
             for (int i = 0; i < categoryCountCopy; i++)
             {
                 if (strcmp(filterID, categoriesCopy[i].categoryId) == 0)
@@ -434,6 +729,14 @@ void filterProduct()
                         {
                             printProduct(products[i]);
                             found = 1;
+                            if (i == productCount - 1)
+                            {
+                                printf("|============|======================|==========|=========|\n");
+                            }
+                            else
+                            {
+                                printf("|------------|----------------------|----------|---------|\n");
+                            }
                         }
                     }
                     if (!found)
@@ -455,21 +758,23 @@ void filterProduct()
 
             printf("\n***** FILTER MENU BY PRICE *****\n\n");
             // printf("Nhập giá bắt đầu: ");
-            printf("Enter start price: ");
+            printf("Enter start price (Enter 0 to cancel): ");
             scanf("%lf", &startPrice);
+
             // printf("Nhập giá kết thúc: ");
             printf("Enter end price: ");
             scanf("%lf", &endPrice);
 
             if (startPrice > endPrice)
             {
-                printf("Khoảng giá vô lý!\n");
+                // printf("Khoảng giá vô lý!\n");
+                printf("Invalid price range!\n");
                 break;
             }
             printf("\n***** PRODUCTS *****\n\n");
-            printf("|============|======================|==========|=========|\n");
-            printf("| ID         | Name                 | Quantity | Price   |\n");
-            printf("|------------|----------------------|----------|---------|\n");
+            printf("|============|================================|==========|==========|\n");
+            printf("| %-10s | %-30s | %8s | %8s |\n", "ID", "Product Name", "Quantity", "Price");
+            printf("|============|================================|==========|==========|\n");
             for (int i = 0; i < productCount; i++)
             {
                 if (products[i].price >= startPrice && products[i].price <= endPrice)
@@ -477,9 +782,9 @@ void filterProduct()
                     printProduct(products[i]);
                     found = 1;
                     if (i == productCount - 1)
-                        printf("|============|======================|==========|=========|\n");
+                        printf("|============|================================|==========|==========|\n");
                     else
-                        printf("|------------|----------------------|----------|---------|\n");
+                        printf("|------------|--------------------------------|----------|----------|\n");
                 }
             }
 
