@@ -60,7 +60,7 @@ void addProduct()
 
     for (int i = 0; i < categoryCountCopy; i++)
     {
-        printf("| %-3s | %-30s |\n", categoriesCopy[i].categoryId, categoriesCopy[i].categoryName);
+        printf("| %-10s | %-30s |\n", categoriesCopy[i].categoryId, categoriesCopy[i].categoryName);
         if (i == categoryCountCopy - 1)
             printf("==================================================\n");
         else
@@ -97,20 +97,24 @@ void addProduct()
             continue;
         }
         // kiểm tra id chưa tồn tại không được thêm sản phẩm
-
+        int isExist = 0;
         for (int i = 0; i < categoryCountCopy; i++)
         {
             if (strcmp(categoryId, categoriesCopy[i].categoryId) == 0)
             {
-
+                isExist = 1;
                 break;
             }
-            else
-            {
-                printf("Category ID does not exist!\n");
-                flag = 1;
-                break;
-            }
+        }
+        if (isExist)
+        {
+            flag = 0;
+        }
+        else
+        {
+            printf("Category ID does not exist! Please choose another ID\n");
+            flag = 1;
+            continue;
         }
 
     } while (flag);
@@ -121,7 +125,7 @@ void addProduct()
     do
     {
         flag = 0;
-        printf("\nEnter Product ID (Enter 0 to cancel): ");
+        printf("Enter Product ID (Enter 0 to cancel): ");
         fgets(newProductId, sizeof(newProductId), stdin);
         newProductId[strcspn(newProductId, "\n")] = '\0';
 
@@ -166,7 +170,7 @@ void addProduct()
     do
     {
         flag = 0;
-        printf("\nEnter Product Name (Enter 0 to cancel): ");
+        printf("Enter Product Name (Enter 0 to cancel): ");
         fgets(newProductName, sizeof(newProductName), stdin);
         newProductName[strcspn(newProductName, "\n")] = '\0';
 
@@ -211,7 +215,7 @@ void addProduct()
     do
     {
         flag = 0;
-        printf("\nEnter Quantity (Enter 0 to cancel): ");
+        printf("Enter Quantity (Enter 0 to cancel): ");
         scanf("%d", &newQuantity);
         getchar();
 
@@ -235,7 +239,7 @@ void addProduct()
     do
     {
         flag = 0;
-        printf("\nEnter Price (Enter 0 to cancel): ");
+        printf("Enter Price (Enter 0 to cancel): ");
         scanf("%d", &newPrice);
         getchar();
 
@@ -264,6 +268,7 @@ void addProduct()
     productCount++;
 
     saveToFile("data/products.txt", products, productCount, sizeof(Product));
+    system("cls");
     printf("Product added successfully!\n");
 
     viewProducts();
@@ -319,6 +324,20 @@ void updateProduct()
             continue;
         }
     } while (flag);
+
+    printf("\n");
+    printf("The product you want to update:\n");
+    for (int i = 0; i < productCount; i++)
+    {
+        if (strcmp(updateProductId, products[i].productId) == 0)
+        {
+            printf("Product ID: %s\n", products[i].productId);
+            printf("Product Name: %s\n", products[i].productName);
+            printf("Quantity: %d\n", products[i].quantity);
+            printf("Price: %d\n", products[i].price);
+            break;
+        }
+    }
 
     char updateProductName[100];
     do
@@ -415,6 +434,26 @@ void updateProduct()
 
     } while (flag);
 
+    printf("\n");
+    printf("Updating Product...\n");
+    printf("---------------------------------------\n");
+    printf("Product ID: %s\n", updateProductId);
+    printf("Product Name: %s\n", updateProductName);
+    printf("Quantity: %d\n", newQuantity);
+    printf("Price: %d\n", newPrice);
+    printf("\n");
+
+    printf("Are you sure? (y/n): ");
+    char confirm;
+    scanf("%c", &confirm);
+    getchar();
+    if (confirm != 'y' && confirm != 'Y')
+    {
+        system("cls");
+        printf("Operation cancelled.\n");
+        return;
+    }
+
     for (int i = 0; i < productCount; i++)
     {
         if (strcmp(updateProductId, products[i].productId) == 0)
@@ -426,7 +465,7 @@ void updateProduct()
             break;
         }
     }
-
+    system("cls");
     printf("Product updated successfully!\n");
     saveToFile("data/products.txt", products, productCount, sizeof(Product));
 
@@ -485,21 +524,28 @@ void deleteProduct()
         }
     } while (flag);
 
-    printf("The product will be deleted: ");
-
+    printf("\nThe product will be deleted: ");
+    printf("---------------------------------------\n");
     printf("\nProduct ID: %s", deleteProductId);
-    printf("\nProduct Name: %s", products[0].productName);
-    printf("\nQuantity: %d", products[0].quantity);
-    printf("\nPrice: %d", products[0].price);
-    printf("\n");
+    for (int i = 0; i < productCount; i++)
+    {
+        if (strcmp(deleteProductId, products[i].productId) == 0)
+        {
+            printf("\nProduct Name: %s", products[i].productName);
+            printf("\nQuantity: %d", products[i].quantity);
+            printf("\nPrice: %d", products[i].price);
+            break;
+        }
+    }
 
-    printf("Are you sure you want to delete this product? (Y/N): ");
+    printf("\n\nAre you sure you want to delete this product? (Y/N): ");
     char choice;
     scanf("%c", &choice);
     getchar();
 
     if (choice != 'Y' && choice != 'y')
     {
+        printf("\033[H\033[J");
         printf("Product deletion cancelled.\n");
         return;
     }
@@ -529,7 +575,7 @@ void searchProduct()
     do
     {
         flag = 0;
-        printf("Enter product name to search (Enter 0 to cancel): ");
+        printf("\nEnter product name to search (Enter 0 to cancel): ");
         fgets(searchProductName, sizeof(searchProductName), stdin);
         searchProductName[strcspn(searchProductName, "\n")] = 0;
 
@@ -573,9 +619,9 @@ void searchProduct()
     } while (flag);
 
     printf("\n***** FIND PRODUCT BY NAME *****\n\n");
-    printf("|============|======================|==========|=========|\n");
-    printf("| ID         | Name                 | Quantity | Price   |\n");
-    printf("|------------|----------------------|----------|---------|\n");
+    printf("|============|================================|==========|==========|\n");
+    printf("| %-10s | %-30s | %8s | %8s |\n", "ID", "Product Name", "Quantity", "Price");
+    printf("|============|================================|==========|==========|\n");
     for (int i = 0; i < productCount; i++)
     {
         char tempProductName[30];
@@ -587,11 +633,11 @@ void searchProduct()
 
             if (i == productCount - 1)
             {
-                printf("|============|======================|==========|=========|\n");
+                printf("|============|================================|==========|==========|\n");
             }
             else
             {
-                printf("|------------|----------------------|----------|---------|\n");
+                printf("|------------|--------------------------------|----------|----------|\n");
             }
         }
     }
@@ -704,6 +750,7 @@ void filterProduct()
             printf("Enter Category ID (Enter 0 to cancel): ");
             scanf("%s", filterID);
             getchar();
+            printf("\033[H\033[J");
 
             if (strcmp(filterID, "0") == 0)
             {
@@ -714,9 +761,9 @@ void filterProduct()
 
             int foundCategory = 0;
             printf("\n***** PRODUCTS *****\n\n");
-            printf("|============|======================|==========|=========|\n");
-            printf("| ID         | Name                 | Quantity | Price   |\n");
-            printf("|------------|----------------------|----------|---------|\n");
+            printf("|============|================================|==========|==========|\n");
+            printf("| %-10s | %-30s | %8s | %8s |\n", "ID", "Product Name", "Quantity", "Price");
+            printf("|============|================================|==========|==========|\n");
             for (int i = 0; i < categoryCountCopy; i++)
             {
                 if (strcmp(filterID, categoriesCopy[i].categoryId) == 0)
@@ -731,11 +778,11 @@ void filterProduct()
                             found = 1;
                             if (i == productCount - 1)
                             {
-                                printf("|============|======================|==========|=========|\n");
+                                printf("|============|================================|==========|==========|\n");
                             }
                             else
                             {
-                                printf("|------------|----------------------|----------|---------|\n");
+                                printf("|------------|--------------------------------|----------|----------|\n");
                             }
                         }
                     }

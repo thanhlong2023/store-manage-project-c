@@ -244,6 +244,18 @@ void updateCategory()
 
     } while (flag);
 
+    printf("\n");
+    printf("The Category Information:\n");
+    printf("-----------------------------------------------\n");
+    printf("ID: %s\n", updateCategoryId);
+    for (int i = 0; i < categoryCount; i++)
+    {
+        if (strcmp(updateCategoryId, categories[i].categoryId) == 0)
+        {
+            printf("Name: %s\n", categories[i].categoryName);
+        }
+    }
+
     do
     {
         flag = 0;
@@ -290,28 +302,45 @@ void updateCategory()
             continue;
         }
 
+    } while (flag);
+
+    printf("\nThe Category will be updated:\n");
+    printf("ID: %s\n", updateCategoryId);
+    printf("Name: %s\n", updateCategoryName);
+    printf("\n");
+    printf("Are you sure you want to update this Category? (Y/N): ");
+    char choice;
+    scanf("%c", &choice);
+    getchar();
+
+    if (choice == 'Y' || choice == 'y')
+    {
         for (int i = 0; i < categoryCount; i++)
         {
             if (strcmp(updateCategoryId, categories[i].categoryId) == 0)
             {
                 strcpy(categories[i].categoryName, updateCategoryName);
-
                 saveToFile("data/category.txt", categories, categoryCount, sizeof(Category));
-                printf("Update category successfully!\n");
+                system("cls");
+                printf("Category updated successfully!\n");
 
-                break;
+                printf("\n***** THE UPDATED CATEGORIE *****\n\n");
+                printf("====================================================\n");
+                printf("| %-10s | %-30s |\n", "ID", "Name");
+                printf("====================================================\n");
+                printf("| %-10s | %-30s |\n", categories[i].categoryId, categories[i].categoryName);
+                printf("====================================================\n");
+
+                pressEnterOrExit(1);
             }
         }
-    } while (flag);
-
-    printf("\n***** THE NEW CATEGORIE *****\n\n");
-    printf("====================================================\n");
-    printf("| %-10s | %-30s |\n", "ID", "Name");
-    printf("====================================================\n");
-    printf("| %-10s | %-30s |\n", updateCategoryId, updateCategoryName);
-    printf("====================================================\n");
-
-    pressEnterOrExit(1);
+    }
+    else
+    {
+        system("cls");
+        printf("Operation cancelled.\n");
+        return;
+    }
 }
 void deleteCategory()
 {
@@ -386,6 +415,7 @@ void deleteCategory()
             if (confirm != 'Y' && confirm != 'y')
             {
                 // printf("Huy xoa danh muc!\n");
+                system("cls");
                 printf("Delete category canceled!\n");
                 return;
             }

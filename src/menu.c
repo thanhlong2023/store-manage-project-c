@@ -58,7 +58,7 @@ void categoryMenu()
 
     do
     {
-        printf("\n***Student Management System Using C***\n\n");
+        printf("\n***Store Management System Using C***\n\n");
 
         printCentered("CATEGORY MENU");
         printf("========================================\n");
@@ -120,8 +120,7 @@ void productMenu()
 
     do
     {
-        printf("\n***Student Management System Using C***\n\n");
-
+        printf("\n***Store Management System Using C***\n\n");
         printCentered("PRODUCT MENU");
         printf("========================================\n");
         // printf("[1]. Xem danh sách sản phẩm.\n");
@@ -206,12 +205,11 @@ void orderMenu()
         switch (choice)
         {
         case 1:
-            createOrder();
-
+            // printf("Chức năng đang cập nhật\n");
+            printf("Creating order...\n");
             break;
         case 2:
-            viewOrders();
-
+            printf("Viewing order list...\n");
             break;
         case 3:
             printf("Returning to the main menu...\n");
